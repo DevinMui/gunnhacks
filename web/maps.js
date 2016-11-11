@@ -9,7 +9,7 @@ function initMap () {
         center: gunnhacks,
         mapTypeControl: false
     });
-    
+
     // Get the current location and center view on it
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -18,22 +18,21 @@ function initMap () {
                 lng: position.coords.longitude
             };
             map.setCenter(pos);
-        }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
         });
-    } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
     }
 
+    for (var i = 0; i < 5; i++) {
+        addMarker(Math.random() * 360 - 180, Math.random() * 360 - 180, createPost("GunnHacks", "https://gunnhacks.com/img/logo.png", "Hello World? Hello World!", "15 minutes ago", i));
+    }
 
+    // Add the default gunnhacks marker
     addMarker(
         gunnhacks.lat,
         gunnhacks.lng,
         createPost(
-            "A Random Position",
-            "http://icons.veryicon.com/32/System/Mini%201/User.png",
-            "Hello World, this is a post!",
+            "GunnHacks",
+            "https://gunnhacks.com/img/logo.png",
+            "<img src=\"http://www.w3schools.com/css/img_fjords.jpg\" /><br />Hello World? Hello World!",
             "15 minutes ago",
             1
         )
@@ -41,9 +40,17 @@ function initMap () {
 }
 
 // This creates a post object that will be displayed on the map
+// Name: name of the post
+// Icon: URL to the picture of the person that posted
+// Content: Picture or text of the post
+// Date: When the post was posted
 function createPost (name, icon, content, date) {
     postCount++;
-    return {name: name, icon: icon, content: content, date: date, id: postCount};
+    var image = {
+        url: icon,
+        scaledSize: new google.maps.Size(48, 48)
+    };
+    return {name: name, icon: image, content: content, date: date, id: postCount};
 }
 
 // This creates a marker on the map at the lat,lng positions
@@ -65,13 +72,6 @@ function addMarker (lat, lng, post) {
 
     marker.addListener('click', function() {
         infowindow.open(map, marker);
+        map.setCenter(marker.position);
     });
 }
-
-// Handles all the location errors
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-    }
