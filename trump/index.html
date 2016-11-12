@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>foobar</title>
+	<title>The Wall</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
 	<link rel="stylesheet" href="index.css">
 </head>
 <body>
-	
+	<a href="https://github.com/DevinMui/gunnhacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+
+	<img src="cloud.png" style="position: absolute; opacity: 0.5; width: 200px; margin-top: 50px; animation: across 30s infinite linear"> 
+	<div class="text-center">
+		<div class="container">
+			<h1>The Wall</h1>
+			<h4>Everytime someone tweets about Donald Trump, the wall gets taller</h4>
+			<h3>Brick count: <span id="brick_count"></span></h3>
+			<h3>Latest Tweet:</h3>
+			<h4 id="txt"></h4>
+		</div>
+	</div>
+
 	<div class="wall"></div>
 	
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
@@ -26,31 +39,36 @@
 		var del = 0
 		var last_count = 0
 		var last_row = 1
+		var max_rows = 8
+
+		socket.on('count', function(count){
+			$('#brick_count').text(count)
+		})
 
 		socket.on('msg', function(msg){
 			addbrick()
+			$('#txt').text(msg)
+			console.log(msg)
 		})
 
 		function addbrick(){
-			if(bricks % n_blocks === 0 && bricks != 0){
-				$('.wall').prepend('<div class="row"  id="' + rows + '"></div>')
-			} else if(rows % 2 === 0 && rows != 0 && rows != last_row){
-				$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
-			} else if(bricks === 0){ // this else is useless
+			// if(bricks % n_blocks === 0 && bricks != 0){
+			// 	$('.wall').prepend('<div class="row"  id="' + rows + '"></div>')
+			// } else if(rows % 2 === 0 && rows != 0 && rows != last_row){
+			// 	$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
+			// } else if(bricks === 0){ // this else is useless
+			// 	$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
+			// }
+			if(bricks % n_blocks === 0 || bricks === 0){
 				$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
 			}
-			
-			$('#' + rows).append('<div class="brick" style="width: ' + width + 'px">')
-			
-			last_count = bricks
-			bricks++
-			
-			last_row = rows
 
-			console.log((bricks % n_blocks === 0 && bricks != last_count))
-			if((rows % 2 === 0 && ((bricks - n_blocks) % (n_blocks - 1) === 0)) || (bricks % n_blocks === 0 && bricks != last_count)){ // or brick count is divisible by 5
+			$('#' + rows).append('<div class="brick" style="width: ' + width + 'px">')
+			bricks++
+
+			if(bricks % n_blocks === 0 && bricks != 0){ // or brick count is divisible by 5
 				
-				if(rows > 4){
+				if(rows > max_rows){
 					$('#' + del).remove()
 					del++
 				}

@@ -4,6 +4,8 @@ var app = express()
 var http = require('http').Server(app)
 var io = require('socket.io')(http);
 
+var bricks = 0
+
 app.use(express.static('./'))
 var client = new Twitter({
   consumer_key: 'dRlAYU0fDOPpAWSGFz3DqTkLx',
@@ -12,10 +14,12 @@ var client = new Twitter({
   access_token_secret: 'aSLZPfWqVNdFhmbrTtGBNdXUBCYFgArMjZ012yUppcKIS'
 });
 
-client.stream('statuses/filter', {track: 'wall'}, function(stream) {
+client.stream('statuses/filter', {track: 'donald trump'}, function(stream) {
   stream.on('data', function(event) {
     console.log(event && event.text);
-    io.emit('msg', event.txt);
+    io.emit('msg', event.text);
+    bricks++
+    io.emit('count', bricks)
   });
  
   stream.on('error', function(error) {

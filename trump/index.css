@@ -2,6 +2,8 @@ html, body {
 	height: 100%;
 	overflow-x: hidden;
 	background-color: #2196f3;
+	color: white;
+    font-family: 'Raleway', sans-serif;
 }
 body {
 	/*position: ;*/
@@ -28,4 +30,13 @@ img {
 	border: 3px solid #424242;
 	display: inline-block;
 	float: left;
+}
+@keyframes across
+{
+    from {
+        left: 0;
+    }
+    to {
+        left: 100%;
+    }
 }
