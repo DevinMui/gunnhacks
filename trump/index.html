@@ -18,6 +18,7 @@
 		<div class="container">
 			<h1>The Wall</h1>
 			<h4>Everytime someone tweets about Donald Trump, the wall gets taller</h4>
+			<p>* This wall doesn't alternate like a normal wall. I've been trying to do it for 4 hours *</p>
 			<h3>Brick count: <span id="brick_count"></span></h3>
 			<h3>Latest Tweet:</h3>
 			<h4 id="txt"></h4>
@@ -38,11 +39,12 @@
 		var bricks = 0
 		var n_blocks = 15
 		var rows = 1
-		var width = $(document).width() / 15
+		var width = $(document).width() / n_blocks
 		var del = 0
 		var last_count = 0
 		var last_row = 1
-		var max_rows = 8
+		var max_rows = 4
+		var every_two = 1
 
 		socket.on('count', function(count){
 			$('#brick_count').text(count)
@@ -66,16 +68,18 @@
 				$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
 			}
 
-			$('#' + rows).append('<div class="brick" style="width: ' + width + 'px">')
+			$('#' + rows).append('<div class="brick" style="width: ' + width + 'px"><h3><b>TRUMP</b></h3></div>')
 			bricks++
 
 			if(bricks % n_blocks === 0 && bricks != 0){ // or brick count is divisible by 5
 				
-				if(rows > max_rows){
+				if(rows > max_rows && rows % 4 === 0){
 					$('#' + del).remove()
-					del++
+					$('#' + (del + 1)).remove()
+					$('#' + (del + 2)).remove()
+					$('#' + (del + 3)).remove()
+					del+=4
 				}
-
 				rows++
 
 			}
