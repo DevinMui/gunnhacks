@@ -1,5 +1,5 @@
 var express = require('express')
-var api = require('instagram-node').instagram()
+// var api = require('instagram-node').instagram()
 var bodyParser = require('body-parser')
 var mongoose = require('mongoose')
 var ejs = require('ejs')
@@ -25,14 +25,48 @@ var dataSchema = new mongoose.Schema({
 	timestamps: true
 })
 
+var userSchema = new mongoose.Schema({
+	email: String,
+	following: [ String ]
+},{
+	timestamps: true
+})
+
+var User = mongoose.model('User', userSchema)
+
 var Data = mongoose.model('Data', dataSchema)
 
+// api parts; todo: ejs
 app.get('/', function(req, res){
 	Data.find({}, function(err, datas){
 		res.send(datas) // im fucking lazy
 	})
 })
 
+app.post('/user', function(req, res){
+	var user = new User({
+		email: req.body.email,
+		following: []
+	})
+	user.save(function(err, user){
+		if(err) res.send("fuck")
+		res.send("success")
+	})
+})
+
+// this is for the users followers
+app.post('/follow', function(req, res){
+	User.findOne({"email": req.body.email}, function(err, user){
+		if(err) res.send("fuck")
+		user.following += req.body.following
+		User.update({"email": req.body.email}, function(err, user){
+			if(err) res.send("fuck")
+			res.send("success")
+		})
+	})
+})
+
+// data from python script that scrapes instagram/twitter
 app.post('/data', function(req, res){
 	var data = Data({
 		lat: req.body.lat,
@@ -43,9 +77,8 @@ app.post('/data', function(req, res){
 	})
 	data.save(function(err, data){
 		if(err) res.send("fuck")
-		res.send(data)	
+		res.send("success")	
 	})
-	
 })
 
 app.listen(3000)
