@@ -1,6 +1,0 @@
-framework module Pods_glasses {
-  umbrella header "Pods-glasses-umbrella.h"
-
-  export *
-  module * { export * }
-}
