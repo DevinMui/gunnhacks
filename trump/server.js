@@ -31,4 +31,4 @@ app.get('/', function(req, res){
 	res.sendfile('index.html')
 })
 
-http.listen(3000)
+http.listen(80)
