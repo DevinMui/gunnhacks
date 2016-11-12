@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>foobar</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="index.css">
+</head>
+<body>
+	
+	<div class="wall"></div>
+	
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script
+	  src="https://code.jquery.com/jquery-2.2.4.min.js"
+	  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	  crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script>
+		var socket = io()
+
+		var bricks = 0
+		var n_blocks = 15
+		var rows = 1
+		var width = $(document).width() / 15
+		var del = 0
+		var last_count = 0
+		var last_row = 1
+
+		socket.on('msg', function(msg){
+			addbrick()
+		})
+
+		function addbrick(){
+			if(bricks % n_blocks === 0 && bricks != 0){
+				$('.wall').prepend('<div class="row"  id="' + rows + '"></div>')
+			} else if(rows % 2 === 0 && rows != 0 && rows != last_row){
+				$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
+			} else if(bricks === 0){ // this else is useless
+				$('.wall').prepend('<div class="row" id="' + rows + '"></div>')
+			}
+			
+			$('#' + rows).append('<div class="brick" style="width: ' + width + 'px">')
+			
+			last_count = bricks
+			bricks++
+			
+			last_row = rows
+
+			console.log((bricks % n_blocks === 0 && bricks != last_count))
+			if((rows % 2 === 0 && ((bricks - n_blocks) % (n_blocks - 1) === 0)) || (bricks % n_blocks === 0 && bricks != last_count)){ // or brick count is divisible by 5
+				
+				if(rows > 4){
+					$('#' + del).remove()
+					del++
+				}
+
+				rows++
+
+			}
+		}
+	</script>
+</body>
+</html>
