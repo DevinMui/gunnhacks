@@ -1,5 +1,5 @@
 var map;
-var postCount;
+var postCount = 0;
 
 function initMap () {
     // Get GunnHacks' position as a default
@@ -22,7 +22,7 @@ function initMap () {
     }
 
     for (var i = 0; i < 5; i++) {
-        addMarker(Math.random() * 360 - 180, Math.random() * 360 - 180, createPost("GunnHacks", "https://gunnhacks.com/img/logo.png", "Hello World? Hello World!", "15 minutes ago", i));
+        addMarker(Math.random() * 360 - 180, Math.random() * 360 - 180, createPost("GunnHacks", "https://gunnhacks.com/img/logo.png", "Hello World? Hello World!", "15 minutes ago", "http://gunnhacks.com"));
     }
 
     // Add the default gunnhacks marker
@@ -34,7 +34,7 @@ function initMap () {
             "https://gunnhacks.com/img/logo.png",
             "<img src=\"http://www.w3schools.com/css/img_fjords.jpg\" /><br />Hello World? Hello World!",
             "15 minutes ago",
-            1
+            "http://gunnhacks.com"
         )
     );
 }
@@ -44,13 +44,14 @@ function initMap () {
 // Icon: URL to the picture of the person that posted
 // Content: Picture or text of the post
 // Date: When the post was posted
-function createPost (name, icon, content, date) {
+// URL: Url of the actual post
+function createPost (name, icon, content, date, url) {
     postCount++;
     var image = {
         url: icon,
         scaledSize: new google.maps.Size(48, 48)
     };
-    return {name: name, icon: image, content: content, date: date, id: postCount};
+    return {name: name, icon: image, content: content, date: date, id: postCount, url: url};
 }
 
 // This creates a marker on the map at the lat,lng positions
@@ -64,7 +65,7 @@ function addMarker (lat, lng, post) {
         icon: post.icon
     });
 
-    var infoContent = "<div id=\"post-info-" + post.id +"\"><h3 class=\"post-info-title\">" + post.name + "</h3><p class=\"post-info-content\">" + post.content + "</p><span class=\"post-info-date\">" + post.date + "</span></div>";
+    var infoContent = "<div href=\"" + post.url + "\" id=\"post-info-" + post.id +"\"><h3 class=\"post-info-title\">" + post.name + "</h3><p class=\"post-info-content\">" + post.content + "</p><span class=\"post-info-date\">" + post.date + "</span></div>";
 
     var infowindow = new google.maps.InfoWindow({
         content: infoContent
